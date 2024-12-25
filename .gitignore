@@ -2,3 +2,4 @@ pipfile
 pipfile.lock
 *.env
 db.sqlite3
+*.media
