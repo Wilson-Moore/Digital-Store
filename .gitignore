@@ -3,3 +3,6 @@ pipfile.lock
 *.env
 db.sqlite3
 media/
+.next/
+out/
+node_modules/
