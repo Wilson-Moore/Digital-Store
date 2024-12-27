@@ -50,10 +50,3 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
-
-class Order(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
-    status=models.BooleanField(default=False)
-    created_at=models.DateTimeField(auto_now_add=True)
-    

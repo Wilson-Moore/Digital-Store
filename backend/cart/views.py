@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from .cart import Cart
-from digital_store.models import Product
+from store.models import Product
 from django.http import JsonResponse
 
 # Create your views here.
