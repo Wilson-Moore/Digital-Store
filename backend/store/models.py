@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MaxValueValidator,MinValueValidator
+from django.contrib.auth.models import AbstractBaseUser
 
 
 # Create your models here.
@@ -7,20 +7,26 @@ class Country(models.Model):
     code=models.CharField(primary_key=True,max_length=2)
     name=models.CharField(max_length=50)
 
+    class Meta:
+        verbose_name_plural="Countries"
+
     def __str__(self):
         return self.name
     
-class User(models.Model):
-    name=models.CharField(max_length=50)
+class User(AbstractBaseUser):
+    username=models.CharField(max_length=50)
     email=models.EmailField(max_length=255)
-    password=models.CharField(max_length=100)
     birth_year=models.DateField(blank=True,null=True)
     country=models.ForeignKey(Country,on_delete=models.SET_NULL,blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     is_publisher=models.BooleanField(default=False)
 
+    USERNAME_FIELD="username"
+    EMAIL_FIELD="email"
+    REQUIRED_FIELDS=["username"]
+
     def __str__(self):
-        return self.name
+        return self.username
     
 class Category(models.Model):
     name=models.CharField(max_length=25)
@@ -31,9 +37,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
-    def is_top_level(self):
-        return self.parent is None
     
 class Product(models.Model):
     name=models.CharField(max_length=255)
@@ -50,3 +53,33 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Favorite(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural="Favorities"
+        unique_together={"user","product"}
+
+class Report(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    reason=models.TextField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Report by {self.user.username} on {self.product.name}"
+    
+class Cart(models.Model):
+    owner=models.ForeignKey(User,on_delete=models.CASCADE)
+    payed=models.BooleanField(default=False)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+class Cart_Item(models.Model):
+    cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.SET_NULL)
+    
+    class Meta:
+        unique_together={"cart","product"}
