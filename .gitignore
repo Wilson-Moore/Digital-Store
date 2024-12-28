@@ -6,3 +6,4 @@ media/
 .next/
 out/
 node_modules/
+__pycache__/
