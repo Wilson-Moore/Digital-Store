@@ -2,21 +2,18 @@
 import { useSelector } from 'react-redux';
 import Navbar from "@/components/Navbar"
 import Link from 'next/link';
+import Header from '@/components/Header';
+import DiscoverCategories from '@/components/DiscoverCategories';
+import Footer from '@/components/Footer';
 
 const Home = () => {
   const categories = useSelector((state) => state.products.categories);
   return (
     <div>
       <Navbar/>
-      <br/>
-      {
-        categories.map((category)=>{
-          return(
-            <Link href={`/category/${category.name.split(" ").join("_")}`}>
-          <div>{category.name}</div></Link>
-          )
-        })
-      }
+      <Header/>
+      <DiscoverCategories/>
+      <Footer/>
     </div>
   )
 }

@@ -1,9 +1,11 @@
+import { assets } from "@/assets/assets.js";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     categories: [
         {
             name:"Software & Development",
+            image: assets.Software_Developement,
             subcategories:[
                 {
                     name:"Extensions & Plugins",
@@ -37,6 +39,7 @@ const initialState = {
         },
         {
             name:"Design & Multimedia",
+            image: assets.Design_Multimedia,
             subcategories:[
                 {
                     name:"Graphics & UI Kits",
@@ -77,6 +80,7 @@ const initialState = {
         },
         {
             name:"Content Creation Tools",
+            image: assets.Content_Creation_Tools,
             subcategories:[
                 {
                     name:"Presentation Templates",
@@ -117,6 +121,7 @@ const initialState = {
         },
         {
             name:"Learning Resources",
+            image: assets.Learning_Resources,
             subcategories:[
                 {
                     name:"Tutorials & Courses",
@@ -143,6 +148,7 @@ const initialState = {
         },
         {
             name:"Project Requests",
+            image: assets.Projects_Requests,
             subcategories:[
                 {
                     name:"Custom Development",
@@ -176,6 +182,7 @@ const initialState = {
         },
         {
             name:"Community & Resources",
+            image:assets.Community_Resources,
             subcategories:[
                 {
                     name:"Community Plugins/Modules",
