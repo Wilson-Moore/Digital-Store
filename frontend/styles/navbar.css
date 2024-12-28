@@ -14,3 +14,29 @@
     outline: none;
     transition: border-color 0.3s ease;
   }
+
+  .navbar-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px;
+    color: #8d8d8d;
+    font-size: 18px;
+  }
+  
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+  
+.navbar button {
+    background-color: transparent;
+    font-size: 16px;
+    color: #072d44;
+    padding: 10px 30px;
+    border: 1px solid #d0d7e1;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
