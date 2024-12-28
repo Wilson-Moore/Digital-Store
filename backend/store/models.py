@@ -61,7 +61,7 @@ class Favorite(models.Model):
 
     class Meta:
         verbose_name_plural="Favorities"
-        unique_together={"user","product"}
+        unique_together=("user","product")
 
 class Report(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -77,9 +77,9 @@ class Cart(models.Model):
     payed=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
 
-class Cart_Item(models.Model):
+class CartItem(models.Model):
     cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
-    product=models.ForeignKey(Product,on_delete=models.SET_NULL)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
     
     class Meta:
-        unique_together={"cart","product"}
+        unique_together=("cart","product")
