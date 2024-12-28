@@ -19,11 +19,11 @@ const Signin = () => {
     
   };
     return (
-        <div>
+        <div className="signup">
             <form>
-                <div className="title-sign-up">
+                <h1 className="title-sign-up">
                     Sign Up As <span>User</span>
-                </div>
+                </h1>
                 <div className="inputs-sign-up">
                     <input name="name" onChange={onChangeHandler} value={data.name} placeholder="Your Name" required />
                     <input name="email" onChange={onChangeHandler} value={data.email} placeholder="Your Email" type="email" required/>

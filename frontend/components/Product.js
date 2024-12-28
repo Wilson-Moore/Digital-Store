@@ -1,4 +1,3 @@
-import { addToFavorites } from "@/redux/slices/favoritesSlice";
 import Link from "next/link"
 import { useDispatch } from "react-redux";
 
@@ -6,9 +5,6 @@ const Product = ({name, price, category, developer, status, id}) => {
 
     const dispatch = useDispatch();
 
-    const handlleAddToFavorites = () => {
-        dispatch(addToFavorites(id));
-    }
 
     return (
         <div>

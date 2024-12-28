@@ -1,0 +1,16 @@
+.navbar {
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+.search input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d0d7e1;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
