@@ -1,0 +1,88 @@
+.report {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 1rem;
+}
+
+.report h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.report p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.select-issue {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.select-issue button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: 2px solid #007bff;
+    background-color: #f9f9f9;
+    color: #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.select-issue button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.select-issue button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.issues {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.issues h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.issues textarea {
+    resize: none;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.issues button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.issues button:hover {
+    background-color: #0056b3;
+}

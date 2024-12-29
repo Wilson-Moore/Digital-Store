@@ -1,6 +1,7 @@
 .header{
     height: 34vw;
     margin: 30px auto;
+    background-image: url("./../public/header.jpg");
     background-size: cover;
     position: relative;
 }
@@ -16,10 +17,12 @@
 }
 
 .header-contents h2{
+    color: aliceblue;
     font-weight: 500;
     font-size: max(4.5vw,22px);
 }
 .header-contents p{
+    color: aliceblue;
     font-size: 1vw;
 }
 .header-contents button{

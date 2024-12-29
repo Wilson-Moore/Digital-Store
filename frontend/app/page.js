@@ -1,7 +1,6 @@
 "use client"
 import { useSelector } from 'react-redux';
 import Navbar from "@/components/Navbar"
-import Link from 'next/link';
 import Header from '@/components/Header';
 import DiscoverCategories from '@/components/DiscoverCategories';
 import Footer from '@/components/Footer';
