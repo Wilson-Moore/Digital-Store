@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
@@ -13,17 +13,11 @@ class Country(models.Model):
     def __str__(self):
         return self.name
     
-class User(AbstractBaseUser):
-    username=models.CharField(max_length=50)
-    email=models.EmailField(max_length=255)
+class User(AbstractUser):
     birth_year=models.DateField(blank=True,null=True)
     country=models.ForeignKey(Country,on_delete=models.SET_NULL,blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     is_publisher=models.BooleanField(default=False)
-
-    USERNAME_FIELD="username"
-    EMAIL_FIELD="email"
-    REQUIRED_FIELDS=["username"]
 
     def __str__(self):
         return self.username
@@ -41,13 +35,11 @@ class Category(models.Model):
 class Product(models.Model):
     name=models.CharField(max_length=255)
     price=models.DecimalField(max_digits=5,decimal_places=2)
-    on_sale=models.BooleanField(default=False)
-    sale_price=models.DecimalField(default=0,max_digits=5,decimal_places=2)
     url=models.URLField(max_length=300,blank=True)
-    publisher=models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
+    publisher=models.ForeignKey(User,on_delete=models.CASCADE)
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
     description=models.TextField(blank=True,null=True)
-    image=models.ImageField(upload_to="uploads/product")
+    image=models.ImageField(upload_to="uploads/product",blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     modified_at=models.DateTimeField(auto_now=True)
 
@@ -60,7 +52,6 @@ class Favorite(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name_plural="Favorities"
         unique_together=("user","product")
 
 class Report(models.Model):
@@ -77,9 +68,15 @@ class Cart(models.Model):
     payed=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"owner {self.owner.username}"
+
 class CartItem(models.Model):
     cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     
     class Meta:
         unique_together=("cart","product")
+
+    def __str__(self):
+        return f"cart {self.cart} item {self.product.name}"
