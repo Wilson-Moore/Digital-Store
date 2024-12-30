@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { useSelector } from "react-redux"
 import "./../styles/discoverCategories.css"
+import Image from "next/image"
 const DiscoverCategories = () => {
 
     const allCategories = useSelector((state) => state.products.categories)
@@ -13,7 +14,7 @@ const DiscoverCategories = () => {
                     return (
                         <div>
                             <Link href={`/category/${category.name.split(" ").join("_")}`}>
-                                <img src={category.image} />
+                                <Image src={category.image} />
                                 <p>{category.name} </p>
                             </Link>
                         </div>

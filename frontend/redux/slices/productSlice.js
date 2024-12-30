@@ -9,6 +9,7 @@ const initialState = {
             subcategories:[
                 {
                     name:"Extensions & Plugins",
+                    image: assets.Plugin_Extention,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -16,6 +17,7 @@ const initialState = {
                 },
                 {
                     name:"Scripts & Code Snippets",
+                    image: assets.Plugin_Extention,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -23,6 +25,7 @@ const initialState = {
                 },
                 {
                     name:"APIs & Integrations",
+                    image: assets.APIs_Integrations,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -30,6 +33,7 @@ const initialState = {
                 },
                 {
                     name:"Dev Tools & Utilities",
+                    image: assets.Dev_Tools_Utilities,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -43,6 +47,7 @@ const initialState = {
             subcategories:[
                 {
                     name:"Graphics & UI Kits",
+                    image: assets.Graphics_UI_Kits,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -50,6 +55,7 @@ const initialState = {
                 },
                 {
                     name:"Mockups & Prototypes",
+                    image: assets.Mockups_Prototypes,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -57,6 +63,7 @@ const initialState = {
                 },
                 {
                     name:"3D Models & Animations",
+                    image: assets.D3_Models_Animations,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -64,6 +71,7 @@ const initialState = {
                 },
                 {
                     name:"Audio & Sound Effects",
+                    image: assets.Audio_Sound_Effects,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -71,6 +79,7 @@ const initialState = {
                 },
                 {
                     name:"Video Templates",
+                    image: assets.Video_Templates,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -84,6 +93,7 @@ const initialState = {
             subcategories:[
                 {
                     name:"Presentation Templates",
+                    image: assets.Presentation_Templates,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -91,6 +101,7 @@ const initialState = {
                 },
                 {
                     name:"Ebooks & Guides",
+                    image: assets.Ebooks_Guides,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -98,6 +109,7 @@ const initialState = {
                 },
                 {
                     name:"Marketing & Branding Kits",
+                    image: assets.Marketing_Branding_Kits,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -105,6 +117,7 @@ const initialState = {
                 },
                 {
                     name:"Fonts & Typography",
+                    image: assets.Fonts_Typography,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -112,6 +125,7 @@ const initialState = {
                 },
                 {
                     name:"Digital Art & Illustrations",
+                    image: assets.Digital_Art_Illustrations,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -125,6 +139,7 @@ const initialState = {
             subcategories:[
                 {
                     name:"Tutorials & Courses",
+                    image: assets.Tutorials_Courses,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -132,6 +147,7 @@ const initialState = {
                 },
                 {
                     name:"Coding Challenges",
+                    image: assets.Coding_Challenges,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -139,6 +155,7 @@ const initialState = {
                 },
                 {
                     name:"Project Blueprints",
+                    image: assets.Project_Blueprints,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -152,6 +169,7 @@ const initialState = {
             subcategories:[
                 {
                     name:"Custom Development",
+                    image: assets.Custom_Development,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -159,6 +177,7 @@ const initialState = {
                 },
                 {
                     name:"Design Projects",
+                    image: assets.Design_Projects,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -166,6 +185,7 @@ const initialState = {
                 },
                 {
                     name:"Consulting & Troubleshooting",
+                    image: assets.Consulting_Troubleshooting,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -173,6 +193,7 @@ const initialState = {
                 },
                 {
                     name:"Learning Mentorship",
+                    image: assets.Learning_Mentorship,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -186,6 +207,7 @@ const initialState = {
             subcategories:[
                 {
                     name:"Community Plugins/Modules",
+                    image:assets.Community_Plugins_Modules,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },
@@ -193,13 +215,15 @@ const initialState = {
                 },
                 {
                     name:"Problem-Solving",
+                    image:assets.Problem_Solving,
                     products:[
-                        { id: 1, name: 'iPhone 12', price: 799 },
-                        { id: 2, name: 'Samsung Galaxy S21', price: 699 },
+                        { id: 1, name: 'iPhone 12', price: 799, image:assets.iPhone_12 },
+                        { id: 2, name: 'Samsung Galaxy S21', price: 699, image:assets.Samsung_Galaxy_S21 },
                     ]
                 },
                 {
                     name:"Resource Libraries",
+                    image:assets.Resource_Libraries,
                     products:[
                         { id: 1, name: 'iPhone 12', price: 799 },
                         { id: 2, name: 'Samsung Galaxy S21', price: 699 },

@@ -23,6 +23,10 @@
     color: #8d8d8d;
     font-size: 18px;
   }
+  .navbar-menu li:hover{
+    color: #072d44;
+    cursor: pointer;
+  }
   
 .navbar-right {
     display: flex;
@@ -39,4 +43,9 @@
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s;
+  }
+  .navbar button:hover {
+    background-color: #d0d7e1;
+    color: #072d44;
+    border-color: transparent;
   }
