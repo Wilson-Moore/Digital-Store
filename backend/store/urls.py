@@ -17,4 +17,5 @@ urlpatterns = [
     path('reports/',views.get_reports,name="get_report"),
     path('cart/',views.get_cart,name="get_cart"),
     path('cart/items/',views.get_cartitems,name="get_cartitems"),
+    path('cart/items/<int:pk>',views.delete_cartitem,name="delete_cartitems")
 ]

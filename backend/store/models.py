@@ -54,6 +54,9 @@ class Favorite(models.Model):
     class Meta:
         unique_together=("user","product")
 
+    def __str__(self):
+        return f"Favored by {self.user.username} on {self.product.name}"
+
 class Report(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
@@ -79,4 +82,4 @@ class CartItem(models.Model):
         unique_together=("cart","product")
 
     def __str__(self):
-        return f"cart {self.cart} item {self.product.name}"
+        return f"cart owner {self.cart.owner.username} item {self.product.name}"

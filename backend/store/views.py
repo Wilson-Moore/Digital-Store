@@ -1,4 +1,3 @@
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -19,12 +18,12 @@ def login(request):
     if not user:
         return Response({"error":"invalid credentials"},status=status.HTTP_401_UNAUTHORIZED)
     
-    token,created=Token.objects.get_or_create(user=user)
+    token=Token.objects.get_or_create(user=user)
     return Response({"token":token.key})
 
 @api_view(["POST"])
 def logout(request):
-    token_key=request.data.get("Authorization")
+    token_key=request.data.get("authorization")
     if token_key:
         token_key=token_key.split(" ")[1]
     try:
@@ -128,11 +127,16 @@ def get_favorites(request):
         return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
     
     favorites=models.Favorite.objects.filter(user=user).select_related("product")
+    print(favorites)
     serializer=FavoriteSerializer(favorites,many=True)
     return Response(serializer.data)
 
 @api_view(["POST"])
 def create_favorite(request):
+    user=request.user
+    if not user.is_authenticated:
+        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+    
     serializer=FavoriteSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -141,14 +145,17 @@ def create_favorite(request):
 
 @api_view(["DELETE"])
 def delete_favorite(request,pk):
+    user=request.user
+    if not user.is_authenticated:
+        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+    
     try:
         favorite=models.Favorite.objects.get(pk=pk)
     except models.Product.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method=="DELETE":
-        favorite.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    favorite.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
     
 api_view(["GET"])
 def get_reports(request):
@@ -162,12 +169,50 @@ def get_reports(request):
 
 api_view(["GET"])
 def get_cart(request):
-    cart=models.Cart.objects.all()
+    user=request.user
+    if not user.is_authenticated:
+        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+
+    cart=models.Cart.objects.filter(owner=2)
     serializer=CartSerializer(cart,many=True)
     return Response(serializer.data)
 
 api_view(["GET"])
 def get_cartitems(request):
-    cartitems=models.CartItem.objects.all()
+    user=request.user
+    if not user.is_authenticated:
+        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        cart=models.Cart.objects.get(owner=user,payed=False)
+    except models.Cart.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    cartitems=models.CartItem.objects.filter(cart=cart)
     serializer=CartItemSerializer(cartitems,many=True)
     return Response(serializer.data)
+
+@api_view(["GET"])
+def delete_cartitem(request,pk):
+    user=request.user
+    if not user.is_authenticated:
+        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        cart=models.Cart.objects.get(owner=2,payed=False)
+    except models.Product.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        product=models.Product.objects.get(pk=pk)
+    except models.Product.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        cartitem=models.CartItem.objects.filter(cart=cart,product=product)
+    except models.Product.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+    cartitem.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
