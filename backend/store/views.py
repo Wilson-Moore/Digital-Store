@@ -2,6 +2,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
+from rest_framework.views import APIView
 from store.models import User
 from rest_framework import status
 from . import models
@@ -18,7 +19,7 @@ def login(request):
     if not user:
         return Response({"error":"invalid credentials"},status=status.HTTP_401_UNAUTHORIZED)
     
-    token=Token.objects.get_or_create(user=user)
+    token,created=Token.objects.get_or_create(user=user)
     return Response({"token":token.key})
 
 @api_view(["POST"])
@@ -120,16 +121,15 @@ def product_detail(request,pk):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-api_view(["GET"])
-def get_favorites(request):
-    user=request.user
-    if not user.is_authenticated:
-        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
-    
-    favorites=models.Favorite.objects.filter(user=user).select_related("product")
-    print(favorites)
-    serializer=FavoriteSerializer(favorites,many=True)
-    return Response(serializer.data)
+class getFavoriteAPI(APIView):
+    def get(self,request):
+        user=request.user
+        if not user.is_authenticated:
+            return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+
+        favorites=models.Favorite.objects.filter(user=2).select_related("product")
+        serializer=FavoriteSerializer(favorites,many=True)
+        return Response(serializer.data)
 
 @api_view(["POST"])
 def create_favorite(request):
@@ -156,41 +156,55 @@ def delete_favorite(request,pk):
 
     favorite.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class getReportAPI(APIView):
+    def get(self,request):
+        user=request.user
+        if not user.is_authenticated:
+            return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+
+        reports=models.Report.objects.filter(pk=1)
+        serializer=ReportSerializer(reports,many=True)
+        return Response(serializer.data)
     
-api_view(["GET"])
-def get_reports(request):
+@api_view(["POST"])
+def create_report(request):
     user=request.user
     if not user.is_authenticated:
         return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
     
-    reports=models.Report.objects.filter(user=user).select_related("product")
-    serializer=ReportSerializer(reports,many=True)
-    return Response(serializer.data)
+    serializer=ReportSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+    return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)
 
-api_view(["GET"])
-def get_cart(request):
-    user=request.user
-    if not user.is_authenticated:
-        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
 
-    cart=models.Cart.objects.filter(owner=2)
-    serializer=CartSerializer(cart,many=True)
-    return Response(serializer.data)
+class getCartAPI(APIView):
+    def get(self,request):
+        user=request.user
+        if not user.is_authenticated:
+            return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
 
-api_view(["GET"])
-def get_cartitems(request):
-    user=request.user
-    if not user.is_authenticated:
-        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
-    
-    try:
-        cart=models.Cart.objects.get(owner=user,payed=False)
-    except models.Cart.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        cart=models.Cart.objects.filter(owner=user)
+        serializer=CartSerializer(cart,many=True)
+        return Response(serializer.data)
 
-    cartitems=models.CartItem.objects.filter(cart=cart)
-    serializer=CartItemSerializer(cartitems,many=True)
-    return Response(serializer.data)
+
+class getCartItemAPI(APIView):
+    def get(self,request):
+        user=request.user
+        if not user.is_authenticated:
+            return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            cart=models.Cart.objects.get(owner=user,payed=False)
+        except models.Cart.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        cartitems=models.CartItem.objects.filter(cart=cart)
+        serializer=CartItemSerializer(cartitems,many=True)
+        return Response(serializer.data)
 
 @api_view(["GET"])
 def delete_cartitem(request,pk):

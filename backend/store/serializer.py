@@ -18,33 +18,33 @@ class CategorySerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
-    category=CategorySerializer()
-    publisher=UserSerializer()
     class Meta:
         model=models.Product
-        fields=["name","price","description","category","publisher"]
+        fields=["name","price","description"]
 
 class FavoriteSerializer(serializers.ModelSerializer):
     user=UserSerializer()
     product=ProductSerializer()
     class Meta:
         model=models.Favorite
-        fields=["user","product"]
+        fields="__all__"
 
 class ReportSerializer(serializers.ModelSerializer):
     user=UserSerializer()
     product=ProductSerializer()
     class Meta:
         model=models.Report
-        fields=["user","product","reason"]
+        fields="__all__"
 
 class CartSerializer(serializers.ModelSerializer):
     owner=UserSerializer()
     class Meta:
         model=models.Cart
-        fields=["owner"]
+        fields="__all__"
 
 class CartItemSerializer(serializers.ModelSerializer):
+    cart=CartSerializer()
+    product=ProductSerializer()
     class Meta:
         model=models.CartItem
-        fields=["cart","product"]
+        fields="__all__"
