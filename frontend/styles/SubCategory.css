@@ -1,0 +1,22 @@
+.title-sub-category{
+    position: relative;
+    margin: 0 2.5rem;
+}
+.title-sub-category::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 72px;
+    height: 2px;
+    background-color: #000;
+    margin-left: .25rem;
+}
+.bd-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    max-width: 1200px;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+    align-items: center;
+    gap: 2rem;
+}
