@@ -7,9 +7,10 @@ class CountrySerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class UserSerializer(serializers.ModelSerializer):
+    country=CountrySerializer()
     class Meta:
         model=models.User
-        fields="__all__"
+        fields=["username","country"]
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,26 +18,33 @@ class CategorySerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
+    category=CategorySerializer()
+    publisher=UserSerializer()
     class Meta:
         model=models.Product
-        fields="__all__"
+        fields=["name","price","description","category","publisher"]
 
 class FavoriteSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    product=ProductSerializer()
     class Meta:
         model=models.Favorite
-        fields="__all__"
+        fields=["user","product"]
 
 class ReportSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    product=ProductSerializer()
     class Meta:
         model=models.Report
-        fields="__all__"
+        fields=["user","product","reason"]
 
 class CartSerializer(serializers.ModelSerializer):
+    owner=UserSerializer()
     class Meta:
         model=models.Cart
-        fields="__all__"
+        fields=["owner"]
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model=models.CartItem
-        fields="__all__"
+        fields=["cart","product"]
