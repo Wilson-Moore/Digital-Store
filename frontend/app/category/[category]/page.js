@@ -51,6 +51,11 @@ const Category = () => {
                 ))}
               </ul>
             </div>
+            <Link href={`/category/${category.split(" ").join("_")}/${subcategory.name
+                  .split(" ")
+                  .join("_")}`} >
+            <div className="subcategory-description">View More</div>
+            </Link>
           </div>
         ))}
       </div>
