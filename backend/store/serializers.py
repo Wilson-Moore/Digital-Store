@@ -20,42 +20,33 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     publisher=UserSerializer(read_only=True)
     category=CategorySerializer(read_only=True)
+    image_url=serializers.SerializerMethodField()
+
+    def get_image_url(self,obj):
+        request=self.context.get("request")
+        if obj.image:
+            return request.build_absolute_uri(obj.image)
+        return None
+
     class Meta:
         model=models.Product
         fields="__all__"
 
-class getFavoriteSerializer(serializers.ModelSerializer):
+class FavoriteSerializer(serializers.ModelSerializer):
     user=UserSerializer()
     product=ProductSerializer()
     class Meta:
         model=models.Favorite
         fields="__all__"
 
-class postFavoriteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=models.Favorite
-        fields="__all__"
-
-class ReportSerializer(serializers.ModelSerializer):
-    user=UserSerializer()
+class CartItemSerializer(serializers.ModelSerializer):
     product=ProductSerializer()
-    class Meta:
-        model=models.Report
-        fields="__all__"
-
-class getCartItemSerializer(serializers.ModelSerializer):
-    product=ProductSerializer()
-    class Meta:
-        model=models.CartItem
-        fields="__all__"
-
-class postCartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model=models.CartItem
         fields="__all__"
         
 class CartSerializer(serializers.ModelSerializer):
-    items=getCartItemSerializer(many=True,read_only=True)
+    items=CartItemSerializer(many=True,read_only=True)
     total_price=serializers.SerializerMethodField()
 
     def get_total_price(self,obj):
@@ -65,4 +56,11 @@ class CartSerializer(serializers.ModelSerializer):
     owner=UserSerializer()
     class Meta:
         model=models.Cart
+        fields="__all__"
+
+class ReportSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    product=ProductSerializer()
+    class Meta:
+        model=models.Report
         fields="__all__"

@@ -1,68 +1,35 @@
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.contrib.auth import authenticate
 from rest_framework.views import APIView
-from rest_framework import generics
-from store.models import User
 from rest_framework import status
 from . import models
-from .serializer import CountrySerializer,UserSerializer,CategorySerializer,ProductSerializer,getFavoriteSerializer,postFavoriteSerializer,ReportSerializer,CartSerializer,getCartItemSerializer,postCartItemSerializer
+from . import serializers
 
-@api_view(["POST"])
-def login_user(request):
-    username=request.data.get("username")
-    password=request.data.get("password")
-    if not username or not password:
-        return Response({"error":"please provide both username and password"},status=status.HTTP_400_BAD_REQUEST)
-    
-    user=authenticate(username=username,password=password)
-    if not user:
-        return Response({"error":"invalid credentials"},status=status.HTTP_401_UNAUTHORIZED)
-    
-    token,created=Token.objects.get_or_create(user=user)
-    return Response({"token":token.key})
 
-@api_view(["POST"])
-def logout_user(request):
-    token_key=request.data.get("authorization")
-    if token_key:
-        token_key=token_key.split(" ")[1]
-    try:
-        token=Token.objects.get(key=token_key)
-        token.delete()
-        return Response({"message":"logged out"},status=status.HTTP_200_OK)
-    except Token.DoesNotExist:
-        return Response({"message":"No token or logged out already"},status=status.HTTP_400_BAD_REQUEST)
+class registerAPI(APIView):
+    def post(self,request):
+        username=request.data.get("username")
+        email=request.data.get("email")
+        password=request.data.get("password")
+        if not username or not password:
+            return Response({"error":"please provide username, email and password"},status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(["POST"])
-def register_user(request):
-    username=request.data.get("username")
-    email=request.data.get("email")
-    password=request.data.get("password")
-    if not username or not password:
-        return Response({"error":"please provide username, email and password"},status=status.HTTP_400_BAD_REQUEST)
+        if models.User.objects.filter(username=username).exists():
+            return Response({"error":"username already exists"},status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(username=username).exists():
-        return Response({"error":"username already exists"},status=status.HTTP_400_BAD_REQUEST)
-    
-    if User.objects.filter(email=email).exists():
-        return Response({"error":"email already exists"},status=status.HTTP_400_BAD_REQUEST)
-    
-    user=User.objects.create_user(username=username,email=email,password=password)
-    return Response({"message":"successfully registerd"},status=status.HTTP_201_CREATED)
+        if models.User.objects.filter(email=email).exists():
+            return Response({"error":"email already exists"},status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(["GET"])
-def get_countries(request):
-    countries=models.Country.objects.all()
-    serializer=CountrySerializer(countries,many=True)
-    return Response(serializer.data)
+        user=models.User.objects.create_user(username=username,email=email,password=password)
+        return Response({"message":"successfully registerd"},status=status.HTTP_201_CREATED)
 
-@api_view(["GET"])
-def get_users(request):
-    users=models.User.objects.all()
-    serializer=UserSerializer(users,many=True)
-    return Response(serializer.data)
+class getCountriesAPI(APIView):
+    def get(self,request):
+        countries=models.Country.objects.all()
+        serializer=serializers.CountrySerializer(countries,many=True)
+        return Response(serializer.data)
 
 @api_view(["GET","PUT","DELETE"])
 def user_detail(request,pk):
@@ -72,11 +39,11 @@ def user_detail(request,pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
     if request.method=="GET":
-        serializer=UserSerializer(user)
+        serializer=serializers.UserSerializer(user)
         return Response(serializer.data)
     
     elif request.method=="PUT":
-        serializer=UserSerializer(user,data=request.data)
+        serializer=serializers.UserSerializer(user,data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -86,21 +53,21 @@ def user_detail(request,pk):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-@api_view(["GET"])
-def get_categories(request):
-    users=models.Category.objects.all()
-    serializer=CategorySerializer(users,many=True)
-    return Response(serializer.data)
+class getCategoriesAPI(APIView):
+    def get(self,request):
+        categories=models.Category.objects.all()
+        serializer=serializers.CategorySerializer(categories,many=True)
+        return Response(serializer.data)
 
-@api_view(["GET"])
-def get_products(request):
-    products=models.Product.objects.all()
-    serializer=ProductSerializer(products,many=True)
-    return Response(serializer.data)
+class getProductsAPI(APIView):
+    def get(self,request):
+        products=models.Product.objects.all()
+        serializer=serializers.ProductSerializer(products,context={"request":request},many=True)
+        return Response(serializer.data)
 
 @api_view(["POST"])
 def create_product(request):
-    serializer=ProductSerializer(data=request.data)
+    serializer=serializers.ProductSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data,status=status.HTTP_201_CREATED)
@@ -114,11 +81,11 @@ def product_detail(request,pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
     if request.method=="GET":
-        serializer=ProductSerializer(product)
+        serializer=serializers.ProductSerializer(product,context={"request":request})
         return Response(serializer.data)
     
     elif request.method=="PUT":
-        serializer=ProductSerializer(product,data=request.data)
+        serializer=serializers.ProductSerializer(product,data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -129,93 +96,105 @@ def product_detail(request,pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class getFavoriteAPI(APIView):
-    def post(self,request):
-        token_key=request.data.get("authorization")
-        if token_key:
-            token_key=token_key.split(" ")[1]
-        try:
-            token=Token.objects.get(key=token_key)
-            favorites=models.Favorite.objects.filter(user=token.user)
-            serializer=getFavoriteSerializer(favorites,many=True)
-            return Response(serializer.data)
-        except Token.DoesNotExist:
-            return Response({"message":"unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
-        # user=request.user
-        # if not user.is_authenticated:
-        #     return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
-
-        # favorites=models.Favorite.objects.filter(user=user).select_related("product")
-        # serializer=FavoriteSerializer(favorites,many=True)
-        # return Response(serializer.data)
-
-class addFavorite(generics.CreateAPIView):
-    model=models.Favorite
-    serializer_class=postFavoriteSerializer
-
-class removeFavorite(generics.DestroyAPIView):
-    queryset=models.Favorite.objects.all()
-    serializer_class=postFavoriteSerializer
-    def get_object(self):
-        user=self.request.query_params.get("user")
-        product=self.request.query_params.get("product")
-        obj=models.Favorite.objects.get(user=user,product=product)
-        return obj
-
-class getReportAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
     def get(self,request):
         user=request.user
-        if not user.is_authenticated:
-            return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
-
-        reports=models.Report.objects.filter(pk=1)
-        serializer=ReportSerializer(reports,many=True)
+        favorites=models.Favorite.objects.filter(user=user).select_related("product")
+        serializer=serializers.FavoriteSerializer(favorites,many=True,context={"request":request})
         return Response(serializer.data)
     
-@api_view(["POST"])
-def create_report(request):
-    user=request.user
-    if not user.is_authenticated:
-        return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
+class postFavoriteAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        product_id=request.data.get("product")
+        user=request.user
+        try:
+            product=models.Product.objects.get(id=product_id)
+        except models.Product.DoesNotExist:
+            return Response({"error":"product not found"},status=status.HTTP_404_NOT_FOUND)
+        favorite,created=models.Favorite.objects.get_or_create(user=user,product=product)
+        if not created:
+            return Response({"error":"product is aleardy favored"},status=status.HTTP_200_OK)
+        return Response({"message":"product add successfully"},status=status.HTTP_201_CREATED)
     
-    serializer=ReportSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
-    return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)
-
+class deleteFavoriteAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def delete(self,request):
+        product_id=request.data.get("product")
+        user=request.user
+        try:
+            product=models.Product.objects.get(id=product_id)
+        except models.Product.DoesNotExist:
+            return Response({"error":"product not found"},status=status.HTTP_404_NOT_FOUND)
+        try:
+            favorite=models.Favorite.objects.get(user=user,product=product)
+        except models.Favorite.DoesNotExist:
+            return Response({"error":"favorite not found"},status=status.HTTP_404_NOT_FOUND)
+        favorite.delete()
+        return Response({"message":"favorite remove successfully"},status=status.HTTP_200_OK)
 
 class getCartAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def get(self,request):
+        user=request.user
+        cart=models.Cart.objects.filter(owner=user)
+        serializer=serializers.CartSerializer(cart,many=True,context={"request":request})
+        return Response(serializer.data)
+    
+class postCartItemAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
     def post(self,request):
-        token_key=request.data.get("authorization")
-        if token_key:
-            token_key=token_key.split(" ")[1]
+        product_id=request.data.get("product")
+        user=request.user
         try:
-            token=Token.objects.get(key=token_key)
-            cart=models.Cart.objects.filter(owner=token.user,payed=False)
-            serializer=CartSerializer(cart,many=True)
-            return Response(serializer.data)
-        except Token.DoesNotExist:
-            return Response({"message":"unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
-        # user=request.user
-        # print(user)
-        # if not user.is_authenticated:
-        #     return Response({"error":"must be authenticated"},status=status.HTTP_401_UNAUTHORIZED)
-
-        # cart=models.Cart.objects.filter(owner=user)
-        # serializer=CartSerializer(cart,many=True)
-        # return Response(serializer.data)
-
+            product=models.Product.objects.get(id=product_id)
+        except models.Product.DoesNotExist:
+            return Response({"error":"product not found"},status=status.HTTP_404_NOT_FOUND)
+        try:
+            cart=models.Cart.objects.get(owner=user,payed=False)
+        except models.Cart.DoesNotExist:
+            return Response({"error":"cart not found"},status=status.HTTP_404_NOT_FOUND)
+        cartitem,created=models.CartItem.objects.get_or_create(cart=cart,product=product)
+        if not created:
+            return Response({"error":"product is aleardy in cart"},status=status.HTTP_200_OK)
+        return Response({"message":"product add successfully"},status=status.HTTP_201_CREATED)
     
-    
-class addCartItem(generics.CreateAPIView):
-    model=models.CartItem
-    serializer_class=postCartItemSerializer
+class deleteCartItemAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def delete(self,request):
+        product_id=request.data.get("product")
+        user=request.user
+        try:
+            product=models.Product.objects.get(id=product_id)
+        except models.Product.DoesNotExist:
+            return Response({"error":"product not found"},status=status.HTTP_404_NOT_FOUND)
+        try:
+            cart=models.Cart.objects.get(owner=user,payed=False)
+        except models.Cart.DoesNotExist:
+            return Response({"error":"cart not found"},status=status.HTTP_404_NOT_FOUND)
+        try:
+            item=models.CartItem.objects.get(cart=cart,product=product)
+        except models.CartItem.DoesNotExist:
+            return Response({"error":"item not found"},status=status.HTTP_404_NOT_FOUND)
+        item.delete()
+        return Response({"message":"item remove successfully"},status=status.HTTP_200_OK)
 
-class removeCartItem(generics.DestroyAPIView):
-    queryset=models.CartItem.objects.all()
-    serializer_class=postCartItemSerializer
-    def get_object(self):
-        cart=self.request.query_params.get("cart")
-        product=self.request.query_params.get("product")
-        obj=models.CartItem.objects.get(cart=cart,product=product)
-        return obj
+class postReportAPI(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        user=request.user
+        product_id=request.data.get("product")
+        reason=request.data.get("reason")
+        try:
+            product=models.Product.objects.get(id=product_id)
+        except models.Product.DoesNotExist:
+            return Response({"error":"product not found"},status=status.HTTP_404_NOT_FOUND)
+        report=models.Report.objects.create(user=user,product=product,reason=reason)
+        return Response({"message":"product successfully reported"},status=status.HTTP_201_CREATED)
