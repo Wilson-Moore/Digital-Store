@@ -17,7 +17,7 @@ class User(AbstractUser):
     birth_year=models.DateField(blank=True,null=True)
     country=models.ForeignKey(Country,on_delete=models.SET_NULL,blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
-    is_publisher=models.BooleanField(default=False)
+    ispublisher=models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
@@ -75,11 +75,15 @@ class Cart(models.Model):
         return f"owner {self.owner.username}"
 
 class CartItem(models.Model):
-    cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cart=models.ForeignKey(Cart,on_delete=models.CASCADE,related_name="items")
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     
     class Meta:
         unique_together=("cart","product")
+
+    @property
+    def product_price(self):
+        return self.product.price
 
     def __str__(self):
         return f"cart owner {self.cart.owner.username} item {self.product.name}"
